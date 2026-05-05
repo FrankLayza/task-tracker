@@ -114,6 +114,77 @@ async function updatedTask() {
   }
 }
 
+async function markInProgress(){
+  if(args[0] === "mark-in-progress"){
+    const tasks = await readTaskFile()
+    const taskID = args[1]
+    const parsedID = parseInt(taskID, 10)
+    if(isNaN(parsedID)){
+      console.error('Invalid value');
+      return 
+    }
+    if(tasks.length === 0){
+      console.error('Empty Array');
+      return
+    }
+    const selectedTask = tasks.find(t => t.id === parsedID)
+    if(!selectedTask){
+      console.error('the selected task doesn\'t exist');
+      return
+    }
+    const updatedTaskStatus = {
+      ...selectedTask,
+      status: 'in-progress',
+      updatedAt: new Date().toISOString()
+    }
+    const selectedTaskId = tasks.findIndex(t => t.id === parsedID)
+    if(selectedTaskId < 0){
+      console.error('the selected task id doesn\'t exist');
+      return
+    }
+    tasks[selectedTaskId] = updatedTaskStatus
+    await writeTaskFile(tasks)
+    console.log(`Task marked as in progress ${parsedID}`);
+    return
+  }
+}
+
+
+async function markDone(){
+  if(args[0] === "mark-done"){
+    const tasks = await readTaskFile()
+    const taskID = args[1]
+    const parsedID = parseInt(taskID, 10)
+    if(isNaN(parsedID)){
+      console.error('Invalid value');
+      return 
+    }
+    if(tasks.length === 0){
+      console.error('Empty Array');
+      return
+    }
+    const selectedTask = tasks.find(t => t.id === parsedID)
+    if(!selectedTask){
+      console.error('the selected task doesn\'t exist');
+      return
+    }
+    const updatedTaskStatus = {
+      ...selectedTask,
+      status: 'done',
+      updatedAt: new Date().toISOString()
+    }
+    const selectedTaskId = tasks.findIndex(t => t.id === parsedID)
+    if(selectedTaskId < 0){
+      console.error('the selected task id doesn\'t exist');
+      return
+    }
+    tasks[selectedTaskId] = updatedTaskStatus
+    await writeTaskFile(tasks)
+    console.log(`Task marked as done (ID:${parsedID})`);
+    return
+  }
+}
+
 async function deleteTask() {
   const tasks = await readTaskFile();
   if (args[0] === "delete") {
@@ -140,4 +211,13 @@ async function deleteTask() {
     console.log(`Task ${parsedID} deleted successfully`);
     return;
   }
+}
+
+async function list() {
+  const tasks = await readTaskFile()
+  if(tasks.length === 0){
+    console.error('Empty Array');
+    return
+  }
+  
 }
