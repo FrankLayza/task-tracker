@@ -114,74 +114,73 @@ async function updatedTask() {
   }
 }
 
-async function markInProgress(){
-  if(args[0] === "mark-in-progress"){
-    const tasks = await readTaskFile()
-    const taskID = args[1]
-    const parsedID = parseInt(taskID, 10)
-    if(isNaN(parsedID)){
-      console.error('Invalid value');
-      return 
+async function markInProgress() {
+  if (args[0] === "mark-in-progress") {
+    const tasks = await readTaskFile();
+    const taskID = args[1];
+    const parsedID = parseInt(taskID, 10);
+    if (isNaN(parsedID)) {
+      console.error("Invalid value");
+      return;
     }
-    if(tasks.length === 0){
-      console.error('Empty Array');
-      return
+    if (tasks.length === 0) {
+      console.error("Empty Array");
+      return;
     }
-    const selectedTask = tasks.find(t => t.id === parsedID)
-    if(!selectedTask){
-      console.error('the selected task doesn\'t exist');
-      return
+    const selectedTask = tasks.find((t) => t.id === parsedID);
+    if (!selectedTask) {
+      console.error("the selected task doesn't exist");
+      return;
     }
     const updatedTaskStatus = {
       ...selectedTask,
-      status: 'in-progress',
-      updatedAt: new Date().toISOString()
+      status: "in-progress",
+      updatedAt: new Date().toISOString(),
+    };
+    const selectedTaskId = tasks.findIndex((t) => t.id === parsedID);
+    if (selectedTaskId < 0) {
+      console.error("the selected task id doesn't exist");
+      return;
     }
-    const selectedTaskId = tasks.findIndex(t => t.id === parsedID)
-    if(selectedTaskId < 0){
-      console.error('the selected task id doesn\'t exist');
-      return
-    }
-    tasks[selectedTaskId] = updatedTaskStatus
-    await writeTaskFile(tasks)
+    tasks[selectedTaskId] = updatedTaskStatus;
+    await writeTaskFile(tasks);
     console.log(`Task marked as in progress ${parsedID}`);
-    return
+    return;
   }
 }
 
-
-async function markDone(){
-  if(args[0] === "mark-done"){
-    const tasks = await readTaskFile()
-    const taskID = args[1]
-    const parsedID = parseInt(taskID, 10)
-    if(isNaN(parsedID)){
-      console.error('Invalid value');
-      return 
+async function markDone() {
+  if (args[0] === "mark-done") {
+    const tasks = await readTaskFile();
+    const taskID = args[1];
+    const parsedID = parseInt(taskID, 10);
+    if (isNaN(parsedID)) {
+      console.error("Invalid value");
+      return;
     }
-    if(tasks.length === 0){
-      console.error('Empty Array');
-      return
+    if (tasks.length === 0) {
+      console.error("Empty Array");
+      return;
     }
-    const selectedTask = tasks.find(t => t.id === parsedID)
-    if(!selectedTask){
-      console.error('the selected task doesn\'t exist');
-      return
+    const selectedTask = tasks.find((t) => t.id === parsedID);
+    if (!selectedTask) {
+      console.error("the selected task doesn't exist");
+      return;
     }
     const updatedTaskStatus = {
       ...selectedTask,
-      status: 'done',
-      updatedAt: new Date().toISOString()
+      status: "done",
+      updatedAt: new Date().toISOString(),
+    };
+    const selectedTaskId = tasks.findIndex((t) => t.id === parsedID);
+    if (selectedTaskId < 0) {
+      console.error("the selected task id doesn't exist");
+      return;
     }
-    const selectedTaskId = tasks.findIndex(t => t.id === parsedID)
-    if(selectedTaskId < 0){
-      console.error('the selected task id doesn\'t exist');
-      return
-    }
-    tasks[selectedTaskId] = updatedTaskStatus
-    await writeTaskFile(tasks)
+    tasks[selectedTaskId] = updatedTaskStatus;
+    await writeTaskFile(tasks);
     console.log(`Task marked as done (ID:${parsedID})`);
-    return
+    return;
   }
 }
 
@@ -214,10 +213,30 @@ async function deleteTask() {
 }
 
 async function list() {
-  const tasks = await readTaskFile()
-  if(tasks.length === 0){
-    console.error('Empty Array');
+  const tasks = await readTaskFile();
+  if (args[0] === "list") {
+    console.log(JSON.stringify(tasks, null, 2));
     return
   }
-  
+  if (args[0] === "list" && args[1] === "todo") {
+    const filteredTodoTasks = tasks.filter((t) => t.status === "todo");
+    console.log(JSON.stringify(filteredTodoTasks, null, 2));
+    return
+  }
+  if (args[0] === "list" && args[1] === "in-progress") {
+    const filteredInProgressTasks = tasks.filter(
+      (t) => t.status === "in-progress",
+    );
+    console.log(JSON.stringify(filteredInProgressTasks, null, 2));
+    return
+  }
+  if (args[0] === "list" && args[1] === "done") {
+    const filteredDoneTasks = tasks.filter((t) => t.status === "done");
+    console.log(JSON.stringify(filteredDoneTasks, null, 2));
+    return
+  }
+  if (tasks.length === 0) {
+    console.error("Empty Array");
+    return;
+  }
 }
