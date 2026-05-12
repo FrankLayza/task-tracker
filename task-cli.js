@@ -114,10 +114,7 @@ async function markInProgress(args) {
       status: "in-progress",
       updatedAt: new Date().toISOString(),
     };
-    if (selectedTaskId < 0) {
-      console.error("the selected task id doesn't exist");
-      return;
-    }
+
     tasks[selectedTaskId] = updatedTaskStatus;
     await writeTaskFile(tasks);
     console.log(`Task marked as in progress (ID: ${parsedID})`);
