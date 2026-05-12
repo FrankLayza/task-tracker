@@ -31,8 +31,8 @@ async function writeTaskFile(tasks) {
 async function addTask(args) {
   if (args[0] === "add") {
     const tasks = await readTaskFile();
-    const firstCommand = args[1];
-    if (!firstCommand) {
+    const description = args.slice(1).join(" ");
+    if (!description) {
       console.error("input a task");
       return;
     }
@@ -40,7 +40,7 @@ async function addTask(args) {
       tasks.length === 0 ? 1 : Math.max(...tasks.map((t) => t.id)) + 1;
     const newTask = {
       id: newId,
-      description: firstCommand,
+      description: description,
       status: "todo",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -54,7 +54,7 @@ async function updatedTask(args) {
   if (args[0] === "update") {
     const tasks = await readTaskFile();
     const taskId = args[1];
-    const newDescription = args[2];
+    const newDescription = args.slice(2).join(" ");
 
     if (!taskId) {
       console.error("provide the task id");
